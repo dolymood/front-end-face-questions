@@ -91,16 +91,16 @@ CSS 相关问题
 ###position的absolute与fixed共同点与不同点    
     
     A：共同点：
-    1.改变行内元素的呈现方式，display被置为block；2.让元素脱离普通流，不占据空间；3.默认会覆盖到非定位元素上
+    1.改变行内元素的呈现方式，display被置为block；2.让元素脱离普通流，不占据空间；3.默认会覆盖到非定位元素上；4.其`margin`不会和其他元素的`margin`发生折叠collapse（因为他们都会创建新的BFC）
     
     B不同点：
-    absolute的”根元素“是可以设置的，而fixed的”根元素“固定为浏览器窗口。当你滚动网页，fixed元素与浏览器窗口之间的距离是不变的。  
+    `absolute`的元素是相对于非`static`的祖先元素来定位的；而`fixed`的元素总是相对于viewport浏览器窗口定位的，所以当你滚动网页，fixed元素与浏览器窗口之间的距离是不变的。
 
 ###介绍一下CSS的盒子模型？
 
     1）有两种， IE 盒子模型、标准 W3C 盒子模型；IE的content部分包含了 border 和 pading;
     
-    2）盒模型： 内容(content)、填充(padding)、边界(margin)、 边框(border).
+    2）盒模型： 内容(content)、填充(padding)、边框(border)、边界(margin).
 
 ###CSS 选择符有哪些？哪些属性可以继承？优先级算法如何计算？ CSS3新增伪类有那些？
 
@@ -110,15 +110,15 @@ CSS 相关问题
             2.类选择器（.myclassname）
             3.标签选择器（div, h1, p）
             4.相邻选择器（h1 + p）
-            5.子选择器（ul < li）
+            5.子选择器（ul > li）
             6.后代选择器（li a）
             7.通配符选择器（ * ）
             8.属性选择器（a[rel = "external"]）
-            9.伪类选择器（a: hover, li: nth - child）
+            9.伪类选择器（a:hover, li:nth-child）
         
-        *   可继承的样式： font-size font-family color, UL LI DL DD DT;
+        *   可继承的样式： font-size font-family color text-indent等;
         
-        *   不可继承的样式：border padding margin width height ;
+        *   不可继承的样式：border padding margin width height等;
         
         *   优先级就近原则，同权重情况下样式定义最近者为准;
         
@@ -129,7 +129,7 @@ CSS 相关问题
     
        !important >  id > class > tag  
     
-       important 比 内联优先级高
+       important 比 内联优先级高，但内联比 id 要高
     
     CSS3新增伪类举例：
     
@@ -172,25 +172,27 @@ CSS 相关问题
     
     如果权重相同，则最后定义的样式会起作用，但是应该避免这种情况出现
 
-###列出display的值，说明他们的作用。position的值， relative和absolute定位原点是？
+###列出display的值，说明他们的作用。position的值， relative和absolute分别是相对于谁进行定位的？
 
     1.   
-      block 象块类型元素一样显示。
-      none 缺省值。象行内元素类型一样显示。
+      block 像块类型元素一样显示。
+      inline 缺省值，象行内元素类型一样显示。
+      none 不显示，也不占据空间。
       inline-block 象行内元素一样显示，但其内容象块类型元素一样显示。
       list-item 象块类型元素一样显示，并添加样式列表标记。
+      table, inline-table, table-row-group, table-column, table-column-group, table-header-group, table-footer-group, table-row, table-cell, 和 table-caption 表现的像一个table元素那样显示。
     
       2. 
       *absolute 
-            生成绝对定位的元素，相对于 static 定位以外的第一个父元素进行定位。 
+            生成绝对定位的元素，相对于 static 定位以外的第一个祖先元素进行定位。 
     
       *fixed （老IE不支持）
             生成绝对定位的元素，相对于浏览器窗口进行定位。 
     
       *relative 
-            生成相对定位的元素，相对于其正常位置进行定位。 
+            生成相对定位的元素，相对于其在普通流中的位置进行定位。 
     
-      * static  默认值。没有定位，元素出现在正常的流中
+      * static  默认值。没有定位，元素出现在普通流中
       *（忽略 top, bottom, left, right z-index 声明）。
     
       * inherit 规定从父元素继承 position 属性的值。
@@ -226,16 +228,18 @@ CSS 相关问题
         fieldset, img { border:0; }
         button, input, select, textarea { font-size:100%; }
         table { border-collapse:collapse; border-spacing:0; } 
+        
+        更推荐：<https://github.com/necolas/normalize.css>
 
 
 
-###对BFC规范的理解？
-     BFC就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。   
-    （W3C CSS 2.1 规范中的一个概念,它决定了元素如何对其内容进行定位,以及与其他元素的关 系和相互作用。）
+###对CSS规范中BFC的理解？
+     BFC，块级格式化上下文，一个创建了新的BFC的盒子是独立布局的，盒子里面的子元素的样式不会影响到外面的元素。在同一个BFC中的两个毗邻的块级盒在垂直方向（和布局方向有关系）的margin会发生折叠。
+    （W3C CSS 2.1 规范中的一个概念，它决定了元素如何对其内容进行布局，以及与其他元素的关系和相互作用。）
 
 ###解释下 CSS sprites，以及你要如何在页面或网站中使用它。
 
-    CSS Sprites其实就是把网页中一些背景图片整合到一张图片文件中，再利用CSS的“background-image”，“background- repeat”，“background-position”的组合进行背景定位，background-position可以用数字能精确的定位出背景图片的位置。
+    CSS Sprites其实就是把网页中一些背景图片整合到一张图片文件中，再利用CSS的“background-image”，“background- repeat”，“background-position”的组合进行背景定位，background-position可以用数字能精确的定位出背景图片的位置。这样可以减少很多图片请求的开销，因为请求耗时比较长；请求虽然可以并发，但是也有限制，一般浏览器都是6个。对于未来而言，就不需要这样做了，因为有了`http2`。
 
 
 
@@ -252,7 +256,7 @@ html部分
     
 ###Doctype作用? 严格模式与混杂模式如何区分？它们有何意义?    
 
-    （1）、<!DOCTYPE> 声明位于文档中的最前面，处于 <html> 标签之前。告知浏览器的解析器，用什么文档类型 规范来解析这个文档。 
+    （1）、<!DOCTYPE> 声明位于文档中的最前面，处于 <html> 标签之前，告知浏览器以何种模式来渲染文档。 
     
     （2）、严格模式的排版和 JS 运作模式是  以该浏览器支持的最高标准运行。
     
@@ -284,7 +288,7 @@ HTML与XHTML——二者有什么区别
 常见兼容性问题？
 --------
 
-    * png24位的图片在iE6浏览器上出现背景，解决方案是做成PNG8.
+    * png24位的图片在iE6浏览器上出现背景，解决方案是做成PNG8，也可以引用一段脚本处理.
     
     * 浏览器默认的margin和padding不同。解决方案是加一个全局的*{margin:0;padding:0;}来统一。
     
@@ -319,23 +323,20 @@ HTML与XHTML——二者有什么区别
     * 解决方法：（条件注释）缺点是在IE浏览器下可能会增加额外的HTTP请求数。
     
     * Chrome 中文界面下默认会将小于 12px 的文本强制按照 12px 显示, 
-      可通过加入 CSS 属性 -webkit-text-size-adjust: none; 解决.
+      可通过加入 CSS 声明 `-webkit-text-size-adjust: none;` 解决（已过时），现在可以通过类似`transform:scale(.8)`解决.
     
     * 超链接访问过后hover样式就不出现了 被点击访问过的超链接样式不在具有hover和active了解决方法是改变CSS属性的排列顺序:
     L-V-H-A :  a:link {} a:visited {} a:hover {} a:active {}
     
-    * 怪异模式问题：漏写DTD声明，Firefox仍然会按照标准模式来解析网页，但在IE中会触发怪异模式。为避免怪异模式给我们带来不必要的麻烦，最好养成书写DTD声明的好习惯。
+    * 怪异模式问题：漏写DTD声明，Firefox仍然会按照标准模式来解析网页，但在IE中会触发怪异模式。为避免怪异模式给我们带来不必要的麻烦，最好养成书写DTD声明的好习惯。现在可以使用[html5](http://www.w3.org/TR/html5/single-page.html)推荐的写法：`<doctype html>`
     
-    * 上下margin重合问题
-    ie和ff都存在，相邻的两个div的margin-left和margin-right不会重合，但是margin-top和margin-bottom却会发生重合。
-    解决方法，养成良好的代码编写习惯，同时采用margin-top或者同时采用margin-bottom。
-    * ie6对png图片格式支持不好(引用一段脚本处理)
+更多兼容性问题：<http://www.w3help.org/zh-cn/causes/>
 
 
     
 ###解释下浮动和它的工作原理？清除浮动的技巧
 
-    浮动元素脱离文档流，不占据空间。浮动元素碰到包含它的边框或者浮动元素的边框停留。
+    浮动元素脱离普通流，不占据空间。浮动元素会向左或向右偏移直到碰到它的包含块的边界或者其他浮动元素的边界。
     
     1.使用空标签清除浮动。
        这种方法是在所有浮动标签后面添加一个空标签 定义css clear:both. 弊端就是增加了无意义标签。
@@ -353,8 +354,18 @@ HTML与XHTML——二者有什么区别
 解决方法：
 使用`CSS`中的`clear:both`;属性来清除元素的浮动可解决2、3问题，对于问题1，添加如下样式，给父元素添加`clearfix`样式：
 
-    .clearfix:after{content: ".";display: block;height: 0;clear: both;visibility: hidden;}
-    .clearfix{display: inline-block;} /* for IE/Mac */
+```css
+.clearfix:before, .clearfix:after {
+    content: "";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+.clearfix {
+    *zoom: 1;
+}
+```
 
 **清除浮动的几种方法：**
 
@@ -371,10 +382,14 @@ HTML与XHTML——二者有什么区别
     
     3,浮动外部元素
     4,设置`overflow`为`hidden`或者auto
+    
+具体参见一丝大姐的[那些年我们一起清除过的浮动](http://www.iyunlu.com/view/css-xhtml/55.html)
 
 ###IE 8以下版本的浏览器中的盒模型有什么不同
 
-    IE8以下浏览器的盒模型中定义的元素的宽高不包括内边距和边框
+    __没什么不同，只是有一些元素有bug__
+    
+    只是在怪异模式下，盒模型中定义的元素的宽高不包括内边距和边框
 
 ###DOM操作——怎样添加、移除、移动、复制、创建和查找节点。 
 
@@ -451,7 +466,8 @@ iframe的优缺点？
         *iframe会阻塞主页面的Onload事件；
         
         *即时内容为空，加载也需要时间
-        *没有语意 
+        *没有语意
+        * 性能差
 
 如何实现浏览器内多个标签页之间的通信?
 -------------------
@@ -464,6 +480,8 @@ webSocket如何兼容低浏览器？
 ------------------
 
     Adobe Flash Socket 、 ActiveX HTMLFile (IE) 、 基于 multipart 编码发送 XHR 、 基于长轮询的 XHR
+    
+    比较出名的<http://socket.io/>
     
 
 线程与进程的区别
@@ -1072,8 +1090,8 @@ WEB应用从服务器主动推送Data到客户端有那些方式？
 
 
      1. 我们在网页中的某个操作（有的操作对应多个事件）。例如：当我们点击一个按钮就会产生一个事件。是可以被 JavaScript 侦测到的行为。  
-     2. 事件处理机制：IE是事件冒泡、火狐是 事件捕获；
-     3.  ev.stopPropagation();
+     2. 事件处理机制：IE是事件冒泡、标准浏览器是 事件捕获->目标元素->冒泡；
+     3.  ev.stopPropagation(); 注意旧ie的方法 ev.cancelBubble = true;
 
 ajax 是什么?ajax 的交互模型?同步和异步的区别?如何解决跨域问题?
 --------------------------------------
